@@ -6,7 +6,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
 class User extends Authenticatable
 {
@@ -46,13 +45,13 @@ class User extends Authenticatable
         ];
     }
 
-    public function openedProjects()
+    public function createdProjects()
     {
         return $this->hasMany(Project::class);
     }
     public function projects()
     {
-        return $this->belongsToMany(Project::class);
+        return $this->belongsToMany(Project::class, table: 'user_project');
     }
 
 }

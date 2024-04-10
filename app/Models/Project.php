@@ -18,12 +18,12 @@ class Project extends Model
 
     use HasFactory;
     
-    public function leader()
+    public function creator()
     {
         return $this->belongsTo(User::class);
     }
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'user_project');
     }
 }
