@@ -14,21 +14,53 @@
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProjectModal">Add Project</button>
       </div>
     </div>
-  
-    <div class="row">
-      <div class="col-md-12">
-        <h2>Your Projects</h2>
-        <div class="row" id="projectList">
-          <!-- Project cards will be dynamically added here -->
-          @foreach ($createdProjects as $project)
-            <div class="p-3">
-              <h3>{{ $project }}</h3>
-            </div>
-          @endforeach
-        </div>
-      </div>
-    </div>
 </div>
+
+<div class="container">
+  <h1>Your Projects</h1>
+  <div class="row row-cols-1 row-cols-md-4 g-4">
+      @if (count($createdProjects) <= 0)
+        <h3 class="pb-4">There are no projects</h3>
+      @endif
+      @foreach ($createdProjects as $project)
+      <div class="col mb-4">
+        <a href="{{ route('project.show', ['project' => $project]) }}" class="text-decoration-none">
+            <div class="card rounded w-100 h-100">
+                <div class="card-body d-flex flex-column" style="min-height: 150px; max-height: 150px; overflow-y: auto;">
+                    <h3 class="card-title">{{ $project->name }}</h3>
+                    <hr class="my-2">
+                    <p class="mb-0">{{ $project->description }}</p>
+                </div>
+            </div>
+        </a>
+      </div>
+      @endforeach
+  </div>
+  <hr class="my-2">
+</div>
+<div class="container">
+  <h1>Projects you are a Member of</h1>
+  <div class="row row-cols-1 row-cols-md-4 g-4">
+      @if (count($projects) <= 0)
+        <h3 class="pb-4">There are no projects</h3>
+      @endif
+      @foreach ($projects as $project)
+      <div class="col mb-4">
+        <a href="{{ route('project.show', ['project' => $project]) }}" class="text-decoration-none">
+            <div class="card rounded w-100 h-100">
+                <div class="card-body d-flex flex-column" style="min-height: 150px; max-height: 150px; overflow-y: auto;">
+                    <h3 class="card-title">{{ $project->name }}</h3>
+                    <hr class="my-2">
+                    <p class="mb-0">{{ $project->description }}</p>
+                </div>
+            </div>
+        </a>
+      </div>
+      @endforeach
+  </div>
+  <hr class="my-2">
+</div>
+
 
 <div class="modal fade" id="addProjectModal" tabindex="-1" role="dialog" aria-labelledby="addProjectModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -66,11 +98,11 @@
 
             <div class="form-group">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-md-auto">
                         <label for="startDate">Start Date*</label>
                         <input type="date" id="startDate" class="form-control" name="startDate" required></input>
                     </div>
-                    <div class="col-6">
+                    <div class="col-md-auto">
                         <label for="endDate">End Date</label>
                         <input type="date" id="endDate" class="form-control" name="endDate"></input>
                     </div>

@@ -10,25 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $post = $request->post();
@@ -60,36 +41,37 @@ class ProjectController extends Controller
             return back()->with('message', 'Failed to create Project');
         }
     }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Project $project)
     {
-        //
+        $users = User::query()->orderBy('name', 'asc')->get()->except(Auth::id());
+        $isCreator = $project->creator->id === Auth::id();
+        return view('project.show', ['project' => $project, 'users' => $users, 'isCreator' => $isCreator]);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Project $project)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Project $project)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Project $project)
-    {
-        //
+        $post = $request->post();
+        try {
+            if($request->filled(['name', 'cost', 'startDate'])){
+                $project->update([
+                    'name' => $post['name'],
+                    'description' => $post['description'],
+                    'cost' => $post['cost'],
+                    'completed_jobs' => $post['completedJobs'],
+                    'start_time' => $post['startDate'],
+                    'end_time' => $post['endDate']
+                ]);
+                $postUserIds = array_filter($post['users']);
+                $postUserIds[] = Auth::id();
+                $postUserIds = array_unique($postUserIds);
+                $project->users()->sync($postUserIds);
+            }else{
+                $project->update(['completed_jobs' => $post['completedJobs']]);
+            }
+            
+            return redirect()->route('project.show', $project)->with('message', 'Project updated successfully');
+        } catch (MassAssignmentException $e) {
+            return back()->with('message', 'Failed to update Project');
+        }
+        
     }
 }
